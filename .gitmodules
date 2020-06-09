@@ -1,0 +1,6 @@
+[submodule "tvm_deploy/tvm"]
+	path = tvm_deploy/tvm
+	url = https://github.com/apache/incubator-tvm
+[submodule "tvm_deploy/decord"]
+	path = tvm_deploy/decord
+	url = https://github.com/dmlc/decord

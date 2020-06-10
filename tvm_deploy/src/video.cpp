@@ -19,16 +19,22 @@
 
 /*!
  *  Copyright (c) 2020 by Contributors
- * \file common.hpp
- * \brief Common functions for GluonCV cpp inference demo
+ * \file video.cpp
+ * \brief simple video reading functions
  * \author
  */
 #include "video.h"
 #include <decord/video_interface.h>
+#include <decord/runtime/registry.h>
 
 namespace video {
-std::vector<cimg_library::CImg<float> > ReadFrames(std::string video_name, int interval) {
-    auto reader = decord::GetVideoReader(video_name, decord::kCPU);
+void SetLogging(int log_level) {
+  (*decord::runtime::Registry::Get("logging._CAPI_SetLoggingLevel"))(log_level);
+}
+
+std::vector<cimg_library::CImg<uint8_t> > ReadFrames(std::string video_name, int interval,
+                                                   int width, int height) {
+    auto reader = decord::GetVideoReader(video_name, decord::kCPU, width, height, 0);
     auto num_frames = reader->GetFrameCount();
     std::vector<int64_t> indices;
     for (int i = 0; i < num_frames - 1; ++i) {
@@ -38,6 +44,18 @@ std::vector<cimg_library::CImg<float> > ReadFrames(std::string video_name, int i
     }
     decord::runtime::NDArray buf;
     auto frames = reader->GetBatch(indices, buf);
-    LOG(INFO) << "num_frames: " << num_frames;
+    auto selected = indices.size();
+    auto stride = 3 * width * height;
+    CHECK_EQ(frames.Size(), selected * stride);
+    std::vector<cimg_library::CImg<uint8_t> > out;
+    out.reserve(selected);
+    std::vector<uint8_t> buffer;
+    frames.CopyTo(buffer);
+    for (int i = 0; i < selected; ++i) {
+      cimg_library::CImg<uint8_t> src(buffer.data() + stride * i, 
+                                    3, width, height, 1);
+      out.emplace_back(src.permute_axes("yzcx"));
+    }
+    return out;
 }
 }

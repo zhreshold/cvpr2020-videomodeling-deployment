@@ -41,7 +41,10 @@
 #include <vector>
 
 // resize short and center crop
-inline cimg_library::CImg<float> ResizeShortCrop(cimg_library::CImg<float> & src, int short_size) {
+inline cimg_library::CImg<uint8_t> ResizeShortCrop(cimg_library::CImg<uint8_t> & src, int short_size, int crop_size) {
+    if (crop_size >= short_size) {
+        short_size = crop_size + 1;
+    }
     double h = src.height();
     double w = src.width();
     double im_size_min = h;
@@ -56,10 +59,10 @@ inline cimg_library::CImg<float> ResizeShortCrop(cimg_library::CImg<float> & src
 
     src.resize(new_w, new_h, -100, -100, 3);
 
-    int rec_x = static_cast<int>(std::round(new_w/2-112));
-    int rec_y = static_cast<int>(std::round(new_h/2-112));
+    int rec_x = static_cast<int>(std::round(new_w/2.0 - crop_size * 0.5));
+    int rec_y = static_cast<int>(std::round(new_h/2.0 - crop_size * 0.5));
 
-    src.crop(rec_x, rec_y, rec_x+223, rec_y+223);
+    src.crop(rec_x, rec_y, rec_x + crop_size - 1, rec_y + crop_size - 1);
     return src;
 }
 

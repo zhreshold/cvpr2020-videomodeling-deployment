@@ -19,18 +19,22 @@
 
 /*!
  *  Copyright (c) 2020 by Contributors
- * \file common.hpp
- * \brief Common functions for GluonCV cpp inference demo
+ * \file video.h
+ * \brief simple video reading functions
  * \author
  */
 #ifndef GCV_TVM_VIDEO_H_
 #define GCV_TVM_VIDEO_H_
+#ifdef cimg_display
+#undef cimg_display
+#endif
 #define cimg_display 0
 #include "CImg.h"
 #include <string>
 #include <vector>
 
 namespace video {
-std::vector<cimg_library::CImg<float> > ReadFrames(std::string video_name, int interval = 25);
+std::vector<cimg_library::CImg<uint8_t> > ReadFrames(std::string video_name, int interval = 25, int width = -1, int height = -1);
+void SetLogging(int log_level);
 }
 #endif

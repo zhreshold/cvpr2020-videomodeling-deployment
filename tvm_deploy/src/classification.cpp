@@ -152,7 +152,7 @@ void RunDemo() {
   std::vector<float> res_softmax(num_class);
   compute::Softmax(output, res_softmax);
   std::stringstream ss;
-  ss << "The input picture is classified to be\n";
+  ss << "The input video is classified to be\n";
   for (int i = 0; i < args::topk; i++) {
       ss <<"\t[" << synset::CLASS_NAMES[res_topk[i]] <<  "], with probability " << std::fixed << std::setprecision(3) << res_softmax[res_topk[i]] << "\n";
   }

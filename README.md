@@ -5,7 +5,7 @@ Materials for demonstrating video model deployment
 To be able to run these jupyter notebooks, you will need to install `mxnet`, `gluoncv` and `tvm`(for third notebook only).
 
 ```
-pip install mxnet gluoncv jupyter
+pip install mxnet gluoncv decord jupyter
 ```
 
 For TVM installation, please check out [tvm](https://tvm.apache.org/docs/install/index.html).
